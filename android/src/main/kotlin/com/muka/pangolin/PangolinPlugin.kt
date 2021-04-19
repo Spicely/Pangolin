@@ -1,6 +1,8 @@
 package com.muka.pangolin
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -21,6 +23,7 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private lateinit var activity: Activity
 
+    private lateinit var applicationContext: Context
 
 
     private lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
@@ -31,6 +34,7 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.flutterPluginBinding = flutterPluginBinding
+        this.applicationContext = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "com.tongyangsheng.pangolin")
         channel.setMethodCallHandler(this)
     }
@@ -73,6 +77,76 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     result.success(true)
                 }
             }
+        } else if (call.method == "loadSplashAd") {
+            // 开屏广告
+            val mCodeId: String = call.argument("mCodeId")!!
+            val deBug: Boolean = call.argument("debug")!!
+            val intent = Intent()
+            intent.setClass(activity, SplashActivity::class.java)
+            intent.putExtra("mCodeId", mCodeId)
+            intent.putExtra("debug", deBug)
+            activity.startActivity(intent)
+        } else if (call.method == "loadRewardAd") {
+            // 激励视屏
+            val isHorizontal: Boolean = call.argument("isHorizontal")!!
+            val mCodeId: String = call.argument("mCodeId")!!
+            val debug: Boolean = call.argument("debug")!!
+            val supportDeepLink: Boolean = call.argument("supportDeepLink")!!
+            val rewardName: String = call.argument("rewardName")!!
+            val rewardAmount: Int = call.argument("rewardAmount")!!
+            val isExpress: Boolean = call.argument("isExpress")!!
+
+            var expressViewAcceptedSizeH: Double? = call.argument("expressViewAcceptedSizeH")
+            expressViewAcceptedSizeH = if (expressViewAcceptedSizeH == null) {
+                500.0
+            } else {
+                call.argument("expressViewAcceptedSizeH")!!
+            }
+            var expressViewAcceptedSizeW: Double? = call.argument("expressViewAcceptedSizeW")
+            expressViewAcceptedSizeW = if (expressViewAcceptedSizeW == null) {
+                500.0
+            } else {
+                call.argument("expressViewAcceptedSizeW")!!
+            }
+
+            val userID: String = call.argument("userID")!!
+            var mediaExtra: String? = call.argument("mediaExtra")
+            mediaExtra = if (mediaExtra == null) {
+                "media_extra"
+            } else {
+                call.argument("mediaExtra")!!
+            }
+
+            val rewardVideo = RewardVideo()
+            RewardVideo._channel = channel
+            rewardVideo.activity = activity
+            rewardVideo.context = applicationContext
+            if (isHorizontal!!) {
+                rewardVideo.mHorizontalCodeId = mCodeId
+            } else {
+                rewardVideo.mVerticalCodeId = mCodeId
+            }
+
+            if (debug != null) {
+                rewardVideo.debug = debug
+            } else {
+                rewardVideo.debug = false
+            }
+
+            if (isExpress != null) {
+                rewardVideo.mIsExpress = isExpress
+            } else {
+                rewardVideo.mIsExpress = false
+            }
+
+            rewardVideo.supportDeepLink = supportDeepLink
+            rewardVideo.expressViewAcceptedSizeH = expressViewAcceptedSizeH!!
+            rewardVideo.expressViewAcceptedSizeW = expressViewAcceptedSizeW!!
+            rewardVideo.rewardName = rewardName
+            rewardVideo.rewardAmount = rewardAmount
+            rewardVideo.userID = userID
+            rewardVideo.mediaExtra = mediaExtra!!
+            rewardVideo.init()
         } else {
             result.notImplemented()
         }

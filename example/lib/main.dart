@@ -15,8 +15,7 @@ void main() async {
     debug: true,
     supportMultiProcess: true,
   ).then((v) {
-    print(v);
-    // _loadRewardAd();
+    Pangolin.loadSplashAd(mCodeId: "887407013", debug: false);
   });
   runApp(MyApp());
 }
@@ -128,10 +127,23 @@ class _MyAppState extends State<MyApp> {
         body: ListView(
           children: [
             Center(
-              child: FlatButton(
-                onPressed: () {},
-                child: Text("Pangolin"),
-              ),
+              child: ElevatedButton(
+                  onPressed: () async {
+                    await Pangolin.loadRewardAd(
+                      isHorizontal: false,
+                      debug: false,
+                      mCodeId: "945637758",
+                      supportDeepLink: true,
+                      rewardName: "深海夺宝_金币_11_25_14:04",
+                      rewardAmount: 3,
+                      isExpress: true,
+                      expressViewAcceptedSizeH: 500,
+                      expressViewAcceptedSizeW: 500,
+                      userID: "user123",
+                      mediaExtra: "media_extra",
+                    );
+                  },
+                  child: Text('激励视频')),
             ),
             PangoinInfoView(
               mCodeId: '946025338',
