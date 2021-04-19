@@ -4,7 +4,22 @@ import 'dart:async';
 import 'package:pangolin/pangolin.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Pangolin.registerPangolin(
+    appId: "5122678",
+    useTextureView: true,
+    appName: "深海夺宝",
+    allowShowNotify: true,
+    allowShowPageWhenScreenLock: true,
+    debug: true,
+    supportMultiProcess: true,
+  ).then((v) {
+    print(v);
+    // _loadRewardAd();
+  });
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -64,19 +79,7 @@ class _MyAppState extends State<MyApp> {
 //  true,
 //  true,
 //  true
-  _initPangolin() async {
-    await Pangolin.registerPangolin(
-      appId: "5122678",
-      useTextureView: true,
-      appName: "深海夺宝",
-      allowShowNotify: true,
-      allowShowPageWhenScreenLock: true,
-      debug: true,
-      supportMultiProcess: true,
-    ).then((v) {
-      // _loadRewardAd();
-    });
-  }
+  _initPangolin() async {}
 
   _loadSplashAd() async {
     Pangolin.loadSplashAd(mCodeId: "887310537", debug: false);
@@ -130,7 +133,11 @@ class _MyAppState extends State<MyApp> {
                 child: Text("Pangolin"),
               ),
             ),
-            // PangoinInfoView(),
+            PangoinInfoView(
+              mCodeId: '946025338',
+              width: double.infinity,
+              height: 320,
+            ),
           ],
         ),
       ),
