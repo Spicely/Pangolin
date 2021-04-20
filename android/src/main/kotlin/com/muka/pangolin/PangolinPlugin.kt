@@ -3,7 +3,14 @@ package com.muka.pangolin
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import androidx.annotation.NonNull
+import com.bytedance.sdk.openadsdk.*
+import com.bytedance.sdk.openadsdk.TTAdNative.NativeExpressAdListener
+import com.bytedance.sdk.openadsdk.TTNativeExpressAd.ExpressAdInteractionListener
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -11,6 +18,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlin.math.roundToInt
 
 
 /** PangolinPlugin */
@@ -25,8 +33,15 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private lateinit var applicationContext: Context
 
+    private var mExpressContainer: FrameLayout? = null
+
+    private var mTTAd: TTNativeExpressAd? = null
+
+    private var startTime: Long = 0
 
     private lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
+
+    private var mTTAdNative: TTAdNative? = null
 
     companion object {
         private const val TAG_FLUTTER_FRAGMENT = "com.tongyangsheng.pangolin/pangolin_info_view"
@@ -147,6 +162,49 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             rewardVideo.userID = userID
             rewardVideo.mediaExtra = mediaExtra!!
             rewardVideo.init()
+        } else if (call.method == "loadBannerAd") {
+            // banner广告
+            val mCodeId: String = call.argument("mCodeId")!!
+            val supportDeepLink: Boolean? = call.argument("supportDeepLink")
+            val isCarousel: Boolean? = call.argument("isCarousel")
+            var interval = 0
+            var expressViewWidth = 0f
+            var expressViewHeight = 0f
+            var topMargin = 0
+            if (call.argument<Double?>("expressViewWidth") != null) {
+                val expressViewWidthDouble: Double? = call.argument("expressViewWidth")
+                expressViewWidth = expressViewWidthDouble!!.toFloat()
+            }
+
+            if (call.argument<Double?>("expressViewHeight") != null) {
+                val expressViewHeightDouble: Double? = call.argument("expressViewHeight")
+                expressViewHeight = expressViewHeightDouble!!.toFloat()
+            }
+            if (call.argument<Int?>("interval") != null && isCarousel!!) {
+                interval = call.argument("interval")!!
+            }
+            if (call.argument<Int?>("topMargin") != null) {
+                topMargin = call.argument("topMargin")!!
+            }
+
+            val rootView: ViewGroup = activity.findViewById<View>(android.R.id.content) as ViewGroup
+            val view: View = View.inflate(activity, R.layout.activity_native_express_banner, null)
+            mExpressContainer = view.findViewById(R.id.express_container) as FrameLayout
+            if (mExpressContainer!!.parent != null) {
+                (mExpressContainer!!.parent as ViewGroup).removeView(mExpressContainer)
+            }
+
+            // 设置banner 广告参数
+            val params: RelativeLayout.LayoutParams = mExpressContainer!!.layoutParams as RelativeLayout.LayoutParams
+            params.height = expressViewHeight.toInt() * 2
+            params.width = expressViewWidth.toInt() * 2
+            // 到顶部距离
+            // 到顶部距离
+            params.topMargin = topMargin
+            mExpressContainer!!.layoutParams = params
+            rootView.addView(mExpressContainer)
+            initTTSDKConfig()
+            this.loadExpressBannerAd(mCodeId, expressViewWidth.roundToInt(), expressViewHeight.roundToInt(), interval)
         } else {
             result.notImplemented()
         }
@@ -171,11 +229,86 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onDetachedFromActivity() {
     }
 
-//    private fun initTTSDKConfig() {
-//        //step2:创建TTAdNative对象，createAdNative(Context context) banner广告context需要传入Activity对象
-//        mTTAdNative = TTAdManagerHolder.get()?.createAdNative(activity)
-//        //step3:(可选，强烈建议在合适的时机调用):申请部分权限，如read_phone_state,防止获取不了imei时候，下载类广告没有填充的问题。
-//        TTAdManagerHolder.get()?.requestPermissionIfNecessary(activity)
-//    }
+    private fun initTTSDKConfig() {
+        //step2:创建TTAdNative对象，createAdNative(Context context) banner广告context需要传入Activity对象
+        mTTAdNative = TTAdManagerHolder.get()?.createAdNative(activity)
+        //step3:(可选，强烈建议在合适的时机调用):申请部分权限，如read_phone_state,防止获取不了imei时候，下载类广告没有填充的问题。
+        TTAdManagerHolder.get()?.requestPermissionIfNecessary(activity)
+    }
+
+    // banner广告 加载
+    private fun loadExpressBannerAd(codeId: String, expressViewWidth: Int, expressViewHeight: Int, interval: Int) {
+        mExpressContainer!!.removeAllViews()
+        //step4:创建广告请求参数AdSlot,具体参数含义参考文档
+        val adSlot = AdSlot.Builder()
+                .setCodeId(codeId)
+                .setSupportDeepLink(true)
+                .setAdCount(1)
+                .setExpressViewAcceptedSize(expressViewWidth.toFloat(), expressViewHeight.toFloat()) //期望模板广告view的size,单位dp
+                .build()
+        //step5:请求广告，对请求回调的广告作渲染处理
+        mTTAdNative!!.loadBannerExpressAd(adSlot, object : NativeExpressAdListener {
+            override fun onError(code: Int, message: String) {
+                mExpressContainer!!.removeAllViews()
+            }
+
+            override fun onNativeExpressAdLoad(ads: List<TTNativeExpressAd>) {
+                if (ads == null || ads.isEmpty()) {
+                    return
+                }
+                mTTAd = ads[0]
+                mTTAd!!.setSlideIntervalTime(interval * 1000)
+                bindBannerAdListener(mTTAd!!)
+                startTime = System.currentTimeMillis()
+                mTTAd!!.render()
+            }
+        })
+    }
+
+    // banner广告 监听
+    private fun bindBannerAdListener(ad: TTNativeExpressAd) {
+        ad.setExpressInteractionListener(object : ExpressAdInteractionListener {
+            override fun onAdClicked(view: View, type: Int) {
+//        TToast.show(mContext, "广告被点击");
+            }
+
+            override fun onAdShow(view: View, type: Int) {
+//        TToast.show(mContext, "广告展示");
+            }
+
+            override fun onRenderFail(view: View, msg: String, code: Int) {
+                //        TToast.show(mContext, msg + " code:" + code);
+            }
+
+            override fun onRenderSuccess(view: View, width: Float, height: Float) {
+                mExpressContainer!!.removeAllViews()
+                mExpressContainer!!.addView(view)
+            }
+        })
+        if (ad.interactionType != TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+            return
+        }
+        ad.setDownloadListener(object : TTAppDownloadListener {
+            override fun onIdle() {}
+            override fun onDownloadActive(totalBytes: Long, currBytes: Long, fileName: String, appName: String) {
+            }
+
+            override fun onDownloadPaused(totalBytes: Long, currBytes: Long, fileName: String, appName: String) {
+//        TToast.show(BannerExpressActivity.this, "下载暂停，点击继续", Toast.LENGTH_LONG);
+            }
+
+            override fun onDownloadFailed(totalBytes: Long, currBytes: Long, fileName: String, appName: String) {
+//        TToast.show(BannerExpressActivity.this, "下载失败，点击重新下载", Toast.LENGTH_LONG);
+            }
+
+            override fun onInstalled(fileName: String, appName: String) {
+//        TToast.show(BannerExpressActivity.this, "安装完成，点击图片打开", Toast.LENGTH_LONG);
+            }
+
+            override fun onDownloadFinished(totalBytes: Long, fileName: String, appName: String) {
+//        TToast.show(BannerExpressActivity.this, "点击安装", Toast.LENGTH_LONG);
+            }
+        })
+    }
 
 }

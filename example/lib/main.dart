@@ -128,22 +128,36 @@ class _MyAppState extends State<MyApp> {
           children: [
             Center(
               child: ElevatedButton(
-                  onPressed: () async {
-                    await Pangolin.loadRewardAd(
-                      isHorizontal: false,
-                      debug: false,
-                      mCodeId: "945637758",
-                      supportDeepLink: true,
-                      rewardName: "深海夺宝_金币_11_25_14:04",
-                      rewardAmount: 3,
-                      isExpress: true,
-                      expressViewAcceptedSizeH: 500,
-                      expressViewAcceptedSizeW: 500,
-                      userID: "user123",
-                      mediaExtra: "media_extra",
-                    );
-                  },
-                  child: Text('激励视频')),
+                onPressed: () async {
+                  await Pangolin.loadRewardAd(
+                    isHorizontal: false,
+                    debug: false,
+                    mCodeId: "945637758",
+                    supportDeepLink: true,
+                    rewardName: "深海夺宝_金币_11_25_14:04",
+                    rewardAmount: 3,
+                    isExpress: true,
+                    expressViewAcceptedSizeH: 500,
+                    expressViewAcceptedSizeW: 500,
+                    userID: "user123",
+                    mediaExtra: "media_extra",
+                  );
+                },
+                child: Text('激励视频'),
+              ),
+            ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  await Pangolin.loadBannerAd(
+                    mCodeId: "946029747",
+                    supportDeepLink: true,
+                    expressViewWidth: 640,
+                    expressViewHeight: 260,
+                  );
+                },
+                child: Text('Banner'),
+              ),
             ),
             PangoinInfoView(
               mCodeId: '946025338',
