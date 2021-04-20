@@ -199,12 +199,18 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             params.height = expressViewHeight.toInt() * 2
             params.width = expressViewWidth.toInt() * 2
             // 到顶部距离
-            // 到顶部距离
             params.topMargin = topMargin
             mExpressContainer!!.layoutParams = params
             rootView.addView(mExpressContainer)
             initTTSDKConfig()
             this.loadExpressBannerAd(mCodeId, expressViewWidth.roundToInt(), expressViewHeight.roundToInt(), interval)
+        } else if (call.method == "removeBannerAd") {
+            // 删除banner广告
+            val params = mExpressContainer!!.layoutParams as FrameLayout.LayoutParams
+            params.height = 0
+            params.width = 0
+            mExpressContainer!!.layoutParams = params
+            result.success(true);
         } else {
             result.notImplemented()
         }
