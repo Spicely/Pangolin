@@ -44,7 +44,9 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private var mTTAdNative: TTAdNative? = null
 
     companion object {
-        private const val TAG_FLUTTER_FRAGMENT = "com.tongyangsheng.pangolin/pangolin_info_view"
+        const val TAG_FLUTTER_FRAGMENT = "com.tongyangsheng.pangolin/pangolin_info_view"
+        const val TAG_SPLASHAD_FRAGMENT = "com.tongyangsheng.pangolin/pangolinSplashAd"
+        const val TAG_BANNERAD_FRAGMENT = "com.tongyangsheng.pangolin/pangolinBannerAd"
     }
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -223,6 +225,8 @@ class PangolinPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
         flutterPluginBinding.platformViewRegistry.registerViewFactory(TAG_FLUTTER_FRAGMENT, PangolinInfoViewFactory(activity))
+        flutterPluginBinding.platformViewRegistry.registerViewFactory(TAG_SPLASHAD_FRAGMENT, SplashFactory(activity, flutterPluginBinding.binaryMessenger))
+        flutterPluginBinding.platformViewRegistry.registerViewFactory(TAG_BANNERAD_FRAGMENT, BannerFactory(activity, flutterPluginBinding.binaryMessenger))
     }
 
     override fun onDetachedFromActivityForConfigChanges() {

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:pangolin/pangolin.dart';
+import 'package:pangolin_example/splash.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'index.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,10 +15,10 @@ void main() async {
     appName: "深海夺宝",
     allowShowNotify: true,
     allowShowPageWhenScreenLock: true,
-    debug: true,
+    debug: false,
     supportMultiProcess: true,
   ).then((v) {
-    Pangolin.loadSplashAd(mCodeId: "887407013", debug: false);
+    // Pangolin.loadSplashAd(mCodeId: "887407013", debug: false);
   });
   runApp(MyApp());
 }
@@ -81,7 +84,7 @@ class _MyAppState extends State<MyApp> {
   _initPangolin() async {}
 
   _loadSplashAd() async {
-    Pangolin.loadSplashAd(mCodeId: "887310537", debug: false);
+    // Pangolin.loadSplashAd(mCodeId: "887310537", debug: false);
   }
 
   //945122969
@@ -120,53 +123,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: ListView(
-          children: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await Pangolin.loadRewardAd(
-                    isHorizontal: false,
-                    debug: false,
-                    mCodeId: "945637758",
-                    supportDeepLink: true,
-                    rewardName: "深海夺宝_金币_11_25_14:04",
-                    rewardAmount: 3,
-                    isExpress: true,
-                    expressViewAcceptedSizeH: 500,
-                    expressViewAcceptedSizeW: 500,
-                    userID: "user123",
-                    mediaExtra: "media_extra",
-                  );
-                },
-                child: Text('激励视频'),
-              ),
-            ),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await Pangolin.loadBannerAd(
-                    mCodeId: "946029747",
-                    supportDeepLink: true,
-                    expressViewWidth: 640,
-                    expressViewHeight: 260,
-                  );
-                },
-                child: Text('Banner'),
-              ),
-            ),
-            PangoinInfoView(
-              mCodeId: '946025338',
-              width: double.infinity,
-              height: 320,
-            ),
-          ],
-        ),
-      ),
+      routes: {
+        '/': (BuildContext context) => Splash(),
+      },
     );
   }
 }
