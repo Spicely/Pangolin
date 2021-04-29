@@ -1,0 +1,35 @@
+PODS:
+  - Bytedance-UnionAD (3.3.6.2)
+  - Flutter (1.0.0)
+  - pangolin (0.0.1):
+    - Bytedance-UnionAD
+    - Flutter
+  - "permission_handler (5.1.0+2)":
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - pangolin (from `.symlinks/plugins/pangolin/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Bytedance-UnionAD
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  pangolin:
+    :path: ".symlinks/plugins/pangolin/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+
+SPEC CHECKSUMS:
+  Bytedance-UnionAD: e9f83939e2a5d857e104f6a91035bbf504b603e5
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  pangolin: d67b51361d0cd180fa6e31e92a65e43804366383
+  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+
+PODFILE CHECKSUM: 77820230a2c0e250d1bf7694e7ea6c91a63c1edd
+
+COCOAPODS: 1.10.0.beta.1
