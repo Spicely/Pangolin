@@ -17,7 +17,7 @@ A new flutter plugin project.
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
   s.libraries = '-ObjC', '-l c++', '-l c++abi', '-l sqlite3', '-l z' 
-  s.frameworks = 'Accelerate', 'AdSupport', 'AudioToolbox', 'AVFoundation', 'CoreGraphics', 'CoreImage', 'CoreLocation', 'CoreMedia', 'CoreMotion', 'CoreTelephony', 'CoreText', 'ImageIO', 'JavaScriptCore', 'MapKit', 'MediaPlayer', 'MobileCoreServices', 'QuartzCore', 'Security', 'StoreKit', 'SystemConfiguration', 'UIKit', 'WebKit', 'libbz2', 'libc++', 'libiconv', 'libresolv.9', 'libsqlite3', 'libxml2', 'libz', 'libc++abi'
+  s.frameworks = 'Accelerate', 'AdSupport', 'AudioToolbox', 'AVFoundation', 'CoreGraphics', 'CoreImage', 'CoreLocation', 'CoreMedia', 'CoreMotion', 'CoreTelephony', 'CoreText', 'ImageIO', 'JavaScriptCore', 'MapKit', 'MediaPlayer', 'MobileCoreServices', 'QuartzCore', 'Security', 'StoreKit', 'SystemConfiguration', 'UIKit', 'WebKit', 'libbz2', 'libc++', 'libiconv', 'libresolv', 'libsqlite3', 'libxml2', 'libz', 'libc++abi'
   s.dependency 'Bytedance-UnionAD'
 
   # Flutter.framework does not contain a i386 slice.
