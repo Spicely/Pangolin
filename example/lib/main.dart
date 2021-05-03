@@ -18,7 +18,6 @@ void main() async {
     debug: false,
     supportMultiProcess: true,
   ).then((v) {
-    print(v);
     // Pangolin.loadSplashAd(mCodeId: "887407013", debug: false);
   });
   runApp(MyApp());

@@ -65,6 +65,7 @@ class _PangolinSplashAdState extends State<PangolinSplashAd> {
     Map<String, dynamic> creationParams = {
       'mCodeId': widget.mCodeId,
     };
+    print(creationParams);
     return Container(
       height: double.infinity,
       width: double.infinity,
@@ -85,7 +86,7 @@ class _PangolinSplashAdState extends State<PangolinSplashAd> {
               onPlatformViewCreated: onPlatformViewCreated,
               creationParams: creationParams,
               creationParamsCodec: const StandardMessageCodec(),
-              // layoutDirection: widget.layoutDirection,
+              layoutDirection: TextDirection.ltr,
               // hitTestBehavior: widget.hitTestBehavior,
             ),
     );

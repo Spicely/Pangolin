@@ -60,5 +60,10 @@
 	<string>该标识符将用于向您投放个性化广告</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>该标识符将用于向您投放个性化广告</string>
+	<key>NSAppTransportSecurity</key>
+    <dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+    </dict>
 </dict>
 </plist>
