@@ -11,4 +11,5 @@ part 'package:pangolin/src/pangolin_main.dart';
 part 'package:pangolin/src/pangolin_info_view.dart';
 part 'package:pangolin/src/pangolin_splashAd.dart';
 part 'package:pangolin/src/pangolin_bannerAd.dart';
+part 'package:pangolin/src/pangolin_rewardAd.dart';
 part 'package:pangolin/src/pangolin_response.dart';

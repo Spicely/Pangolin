@@ -14,26 +14,21 @@ class _IndexState extends State<Index> {
     return Scaffold(
       body: ListView(
         children: [
-          // Center(
-          //   child: ElevatedButton(
-          //     onPressed: () async {
-          //       await Pangolin.loadRewardAd(
-          //         isHorizontal: false,
-          //         debug: false,
-          //         mCodeId: "945637758",
-          //         supportDeepLink: true,
-          //         rewardName: "深海夺宝_金币_11_25_14:04",
-          //         rewardAmount: 3,
-          //         isExpress: true,
-          //         expressViewAcceptedSizeH: 500,
-          //         expressViewAcceptedSizeW: 500,
-          //         userID: "user123",
-          //         mediaExtra: "media_extra",
-          //       );
-          //     },
-          //     child: Text('激励视频'),
-          //   ),
-          // ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () async {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => PangolinRewardAd(
+                      mCodeId: "945637758",
+                    ),
+                  ),
+                );
+              },
+              child: Text('激励视频'),
+            ),
+          ),
           // Center(
           //   child: ElevatedButton(
           //     onPressed: () async {

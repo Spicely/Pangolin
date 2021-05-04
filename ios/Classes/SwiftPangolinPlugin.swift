@@ -13,6 +13,9 @@ public class SwiftPangolinPlugin: NSObject, FlutterPlugin, BUSplashAdDelegate {
     
     let bannerInstance = BannerFactory(withMessenger: registrar)
     registrar.register(bannerInstance, withId: "com.tongyangsheng.pangolin/pangolinBannerAd")
+    
+    let rewardInstance = RewardFactory(withMessenger: registrar)
+    registrar.register(rewardInstance, withId: "com.tongyangsheng.pangolin/pangolinRewardAd")
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -32,6 +35,7 @@ public class SwiftPangolinPlugin: NSObject, FlutterPlugin, BUSplashAdDelegate {
         splashView.loadAdData()
         keyWindow!.rootViewController!.view.addSubview(splashView)
         splashView.rootViewController = keyWindow!.rootViewController
+        result(true)
     }
   }
 }
