@@ -2,32 +2,30 @@ part of pangolon;
 
 const _pangolinRewardAd = 'com.tongyangsheng.pangolin/pangolinRewardAd';
 
+typedef void PangolinRewardAdOnAdClose();
+
 class PangolinRewardAd extends StatefulWidget {
   final String mCodeId;
 
-  /// 倒计时结束
-  final PangolinSplashAdOnAdTimeOver? onAdTimeOver;
+  final String userId;
 
-  /// 跳过倒计时
-  final PangolinSplashAdOnAdSkip? onAdSkip;
+  final String? rewardName;
 
-  /// 广告显示
-  final PangolinSplashAdOnAdShow? onAdShow;
+  final String? extra;
 
-  /// 点击广告
-  final PangolinSplashAdOnAdClicked? onAdClicked;
+  final int? rewardAmount;
 
-  /// 只要广告看不到都会触发 用于跳转页面
-  // final PangolinSplashAdOnAdOver onAdOver;
+  /// 点击关闭
+  final PangolinRewardAdOnAdClose? onAdClose;
 
   const PangolinRewardAd({
     Key? key,
     required this.mCodeId,
-    // required this.onAdOver,
-    this.onAdTimeOver,
-    this.onAdSkip,
-    this.onAdShow,
-    this.onAdClicked,
+    required this.userId,
+    this.rewardName,
+    this.extra,
+    this.rewardAmount,
+    this.onAdClose,
   }) : super(key: key);
 
   @override
@@ -54,6 +52,10 @@ class _PangolinRewardAdState extends State<PangolinRewardAd> {
   Widget build(BuildContext context) {
     Map<String, dynamic> creationParams = {
       'mCodeId': widget.mCodeId,
+      'userId': widget.userId,
+      'extra': widget.extra,
+      'rewardName': widget.rewardName,
+      'rewardAmount': widget.rewardAmount,
     };
     return Container(
       height: double.infinity,
@@ -84,31 +86,15 @@ class _PangolinRewardAdState extends State<PangolinRewardAd> {
   Future<void> onPlatformViewCreated(int id) async {
     _event = EventChannel('${_pangolinRewardAd}_$id');
     _event!.receiveBroadcastStream().listen((dynamic data) {
-      // switch (data.toString()) {
-      //   case 'onAdTimeOver':
-      //     {
-      //       widget.onAdTimeOver?.call();
-      //       widget.onAdOver.call();
-      //     }
-      //     break;
-      //   case 'onAdClicked':
-      //     {
-      //       widget.onAdClicked?.call();
-      //       widget.onAdOver.call();
-      //     }
-      //     break;
-      //   case 'onAdShow':
-      //     {
-      //       widget.onAdShow?.call();
-      //     }
-      //     break;
-      //   case 'onAdSkip':
-      //     {
-      //       widget.onAdSkip?.call();
-      //       widget.onAdOver.call();
-      //     }
-      //     break;
-      // }
+      print(data);
+      switch (data.toString()) {
+        case 'onAdClose':
+          {
+            widget.onAdClose?.call();
+            Navigator.pop(context);
+          }
+          break;
+      }
     });
   }
 }

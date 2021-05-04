@@ -34,6 +34,7 @@ class RewardView: NSObject, FlutterPlatformView, FlutterStreamHandler, BUNativeE
     private var flutterRegister: FlutterPluginRegistrar
     private var event: FlutterEventChannel
     private var eventSink: FlutterResult?
+    private var rewardedAd: BUNativeExpressRewardedVideoAd
     
     init(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?, binaryMessenger register: FlutterPluginRegistrar) {
         flutterRegister = register
@@ -44,26 +45,46 @@ class RewardView: NSObject, FlutterPlatformView, FlutterStreamHandler, BUNativeE
         }
         var codeId: String? = ""
         event = FlutterEventChannel(name: "com.tongyangsheng.pangolin/pangolinRewardAd_\(viewId)", binaryMessenger: register.messenger())
-        if let args = args as? [String: Any] {
-            codeId = args["mCodeId"] as? String
+        let args = args as? [String: Any]
+        if args != nil {
+            codeId = args!["mCodeId"] as? String
         }
         rewardView = UIViewController()
+        let model = BURewardedVideoModel()
+        model.userId = (args!["userId"] as! String)
+        print(args!["rewardName"] as Any)
+        print("---------------------------")
+        if ((args!["rewardName"] as? String) != nil) {
+            model.rewardName = (args!["rewardName"] as! String)
+        }
+        if ((args!["extra"] as? String) != nil) {
+            model.extra = (args!["extra"] as! String)
+        }
+
+        if ((args!["rewardAmount"] as? Int) != nil) {
+            model.rewardAmount = (args!["rewardAmount"] as! Int)
+        }
+        
+        rewardedAd = BUNativeExpressRewardedVideoAd(slotID: codeId!, rewardedVideoModel: model)
         super.init()
         
         event.setStreamHandler(self)
-        let model = BURewardedVideoModel()
-//        model.userId = codeId
-//        model.rewardName = rewardName
-//        model.extra = mediaExtra
-        
-        let rewardedAd = BUNativeExpressRewardedVideoAd(slotID: codeId!, rewardedVideoModel: model)
         rewardedAd.loadData()
         rewardedAd.delegate = self
-        rewardedAd.show(fromRootViewController: rewardView)
+        
     }
     
     func view() -> UIView {
         return rewardView.view
+    }
+    
+    func nativeExpressRewardedVideoAdDidDownLoadVideo(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd) {
+        rewardedAd.show(fromRootViewController: rewardView)
+    }
+    // 关闭
+    func nativeExpressRewardedVideoAdDidClose(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd) {
+        eventSink?("onAdClose")
+        rewardView.dismiss(animated: false)
     }
     
     

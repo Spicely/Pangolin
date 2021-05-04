@@ -17,11 +17,12 @@ class _IndexState extends State<Index> {
           Center(
             child: ElevatedButton(
               onPressed: () async {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => PangolinRewardAd(
                       mCodeId: "945637758",
+                      userId: "user123",
                     ),
                   ),
                 );
