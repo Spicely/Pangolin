@@ -1,6 +1,0 @@
-package com.muka.pangolin_example
-
-import io.flutter.embedding.android.FlutterActivity
-
-class MainActivity: FlutterActivity() {
-}
