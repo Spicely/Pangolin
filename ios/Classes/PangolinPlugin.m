@@ -28,6 +28,7 @@ BUBannerAdViewDelegate>
 @implementation PangolinPlugin
 
 FlutterMethodChannel* globalMethodChannel;
+FlutterResult splashResult;
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     FlutterMethodChannel* channel = [FlutterMethodChannel
@@ -51,6 +52,7 @@ FlutterMethodChannel* globalMethodChannel;
     }
     else if([@"loadSplashAd" isEqualToString:call.method])
     {
+        splashResult = result;
         NSString* mCodeId = call.arguments[@"mCodeId"];
         
         [BUAdSDKManager setIsPaidApp:NO];
@@ -139,11 +141,13 @@ FlutterMethodChannel* globalMethodChannel;
 
 // 开屏广告加载失败
 - (void)splashAd:(BUSplashAdView *)splashAd didFailWithError:(NSError * _Nullable)error {
-      [splashAd removeFromSuperview];
+    splashResult(@YES);
+    [splashAd removeFromSuperview];
 }
 
 //开屏视频关闭
 - (void)splashAdDidClose:(BUSplashAdView *)splashAd {
+    splashResult(@YES);
     [splashAd removeFromSuperview];
 }
 
